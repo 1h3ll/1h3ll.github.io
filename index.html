@@ -5,24 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>New One</title>
     <style>
-        body {
-            background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('assets/pc.gif');
-            background-size: cover;
-            font-size: 29px;
-            line-height: 1.1;
-            letter-spacing: 0.219em;
-            font-weight: 300;
-            font-style: italic;
-            color: aqua;
+        * {
+            padding: 0px;
+            margin: 0px;
+            box-sizing: border-box;
         }
 
-        h1 {
-            text-align: center;
-            padding-top: 20%;
+        body {
+            background: url('assets/pc.gif');
+            background-size: cover;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            animation: shakeBackground 0.5s ease-in-out infinite;
+        }
+
+        @keyframes shakeBackground {
+            0% { background-position: 0 0; }
+            25% { background-position: -5px 0; }
+            50% { background-position: 5px 0; }
+            75% { background-position: -5px 0; }
+            100% { background-position: 0 0; }
         }
     </style>
 </head>
-<body>
-    <img src=assets/site-down.jpeg>
-</body>
 </html>
