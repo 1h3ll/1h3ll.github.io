@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Secure Notes</title>
+</head>
+<body>
+  <div id="login">
+    <h1>Login</h1>
+    <input type="password" id="password" placeholder="Password">
+    <button onclick="login()">Unlock Notes</button>
+    <p id="error"></p>
+  </div>
+
+  <div id="notes" style="display:none;">
+    <textarea id="editor" rows="20" cols="80"></textarea>
+    <button onclick="saveNotes()">Save</button>
+  </div>
+
+  <!-- Include CryptoJS for encryption -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
