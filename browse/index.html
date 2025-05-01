@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Outlaw Search</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: linear-gradient(rgba(0, 0, 0, -0.7), rgba(0, 0, 0, 0.7)),
+                        url('https://wallpapercave.com/wp/wp3770494.jpg') center/cover;
+            font-family: 'Cinzel', serif;
+            color: #d4af37;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            touch-action: manipulation;
+        }
+
+        .banner {
+            position: absolute;
+            top: 20px;
+            text-align: center;
+        }
+
+        .banner img {
+            width: min(350px, 80vw);
+            filter: drop-shadow(0 0 10px #8b0000);
+        }
+
+        .search-container {
+            width: 90%;
+            max-width: 600px;
+            background: rgba(10, 10, 10, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #5a3000;
+            box-shadow: 0 0 20px #8b0000;
+            margin-top: -50px; /* Adjust this to fine-tune vertical position */
+        }
+
+        /* Rest of the CSS remains the same */
+        .search-box {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        #searchInput {
+            width: 100%;
+            padding: 15px;
+            font-size: 16px;
+            background: #2d2d2d;
+            border: 1px solid #5a3000;
+            color: #d4af37;
+            border-radius: 5px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        #engineSelect {
+            width: 100%;
+            padding: 15px;
+            background: #2d2d2d;
+            border: 1px solid #5a3000;
+            color: #d4af37;
+            border-radius: 5px;
+            cursor: pointer;
+            -webkit-appearance: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: #8b0000;
+            border: none;
+            color: #d4af37;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Cinzel', serif;
+            transition: all 0.3s;
+            font-size: 16px;
+            touch-action: manipulation;
+        }
+
+        @media (min-width: 768px) {
+            .search-box {
+                flex-direction: row;
+            }
+            
+            #engineSelect {
+                width: 200px;
+            }
+            
+            button {
+                width: auto;
+                padding: 15px 30px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #searchInput, #engineSelect, button {
+                font-size: 18px;
+                padding: 18px;
+            }
+            
+            .banner img {
+                width: 250px;
+            }
+            
+            .search-container {
+                margin-top: -30px;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    
+        
+
+    <div class="search-container">
+        <form id="searchForm" action="#" method="post" autocomplete="off">
+            <div class="search-box">
+                <select id="engineSelect">
+                    <option value="https://www.google.com/search?q=">Google</option>
+                    <option value="https://duckduckgo.com/?q=">DuckDuckGo</option>
+                    <option value="https://www.bing.com/search?q=">Bing</option>
+                    <option value="https://www.youtube.com/results?search_query=">YouTube</option>
+                </select>
+                <input type="text" id="searchInput" placeholder="Enter your search..." autocomplete="off">
+                <button type="submit">Search</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Existing JavaScript remains the same
+        document.getElementById('searchForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const engine = document.getElementById('engineSelect').value;
+            const query = document.getElementById('searchInput').value;
+            window.location.href = engine + encodeURIComponent(query);
+        });
+
+        document.getElementById('engineSelect').addEventListener('change', function() {
+            const engineName = this.options[this.selectedIndex].text;
+            document.getElementById('searchInput').placeholder = `Search ${engineName}...`;
+        });
+
+        document.getElementById('searchInput').addEventListener('focus', function() {
+            window.scrollTo(0, 0);
+            document.body.scrollTop = 0;
+        });
+    </script>
+</body>
+</html>
