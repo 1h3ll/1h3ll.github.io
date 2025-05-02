@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Let's Funnnn.....</title>
+    <style>
+        * {
+            padding: 0px;
+            margin: 0px;
+            box-sizing: border-box;
+        }
+
+        #bg-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            min-width: 100vw;
+            min-height: 100vh;
+            object-fit: cover;
+             z-index: -1;
+        }
+        .folder-icon {
+        position: relative;
+        display: inline-block;
+        margin: 10px;
+        }
+
+        .folder-icon img {
+        width: 72px;
+        height: 72px;
+        }
+        .desktop {
+        position: absolute;
+        top: 60px;
+        right: 1780px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 25px;
+        }
+        .folder-label {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(0, 0, 0, 0.6);
+        color: white;
+        font-size: 12px;
+        text-align: center;
+        padding: 2px 0;
+        }
+    </style>
+</head>
+<body>
+    <video autoplay muted loop id="bg-video">
+        <source src="assets/video.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+     </video>
+<div class="desktop">
+    <div class="folder-icon" id="OpenSearch">
+        <a href="browse/index.html" target="_blank">
+            <img src="assets/browse.ico" alt="Search">
+            <span class="folder-label">Explore</span>
+        </a>
+    </div>
+    
+    <div class="folder-icon" id="openGithub">
+        <a href="https://github.com/1h3ll" target="_blank">
+            <img src="assets/github.ico" alt="Github Icon">
+            <span class="folder-label">Github</span>
+        </a>
+    </div>
+
+    <div class="folder-icon" id="google-dork">
+        <a href="dorks/google.html" target="_blank">
+            <img src="assets/google.ico" alt="Google-Dork Icon">
+            <span class="folder-label">Do Nothing</span>
+        </a>
+    </div>
+
+    <div class="folder-icon" id="nonprofit">
+        <a href="" target="_blank">
+            <img src="assets/cat.ico" alt="Nonprofit Icon">
+            <span class="folder-label">Do Nothing</span>
+        </a>
+    </div>
+</div>
+</body>
+</html>
+
