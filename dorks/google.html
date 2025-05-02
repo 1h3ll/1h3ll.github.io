@@ -1,91 +1,663 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Let's Funnnn.....</title>
+    <title>Bug Bounty Search Engine</title>
     <style>
-        * {
-            padding: 0px;
-            margin: 0px;
-            box-sizing: border-box;
+        :root {
+            --primary-color: #4CAF50;
+            --secondary-color: #8BC34A;
+            --dark-bg: #121212;
+            --card-bg: #1e1e1e;
+            --text-color: #ffffff;
+            --border-color: #333;
         }
-
-        #bg-video {
-            position: fixed;
+        
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+        }
+        
+        .search-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 30px;
+            position: sticky;
             top: 0;
-            left: 0;
-            min-width: 100vw;
-            min-height: 100vh;
-            object-fit: cover;
-             z-index: -1;
+            background-color: var(--dark-bg);
+            padding: 15px 0;
+            z-index: 100;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
-        .folder-icon {
-        position: relative;
-        display: inline-block;
-        margin: 10px;
+        
+        .target-input {
+            width: 80%;
+            max-width: 700px;
+            padding: 15px 25px;
+            font-size: 18px;
+            border: 2px solid var(--primary-color);
+            border-radius: 30px;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            outline: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
-
-        .folder-icon img {
-        width: 72px;
-        height: 72px;
+        
+        .target-input:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 15px rgba(76, 175, 80, 0.5);
         }
-        .desktop {
-        position: absolute;
-        top: 60px;
-        right: 1780px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 25px;
+        
+        .button-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
         }
-        .folder-label {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: rgba(0, 0, 0, 0.6);
-        color: white;
-        font-size: 12px;
-        text-align: center;
-        padding: 2px 0;
+        
+        .button-section {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+        
+        .button-section:hover {
+            transform: translateY(-5px);
+        }
+        
+        .section-title {
+            color: var(--secondary-color);
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title::before {
+            content: "▶";
+            margin-right: 10px;
+            font-size: 0.8em;
+            color: var(--primary-color);
+        }
+        
+        .futuristic-button {
+            width: 100%;
+            padding: 12px 20px;
+            margin-bottom: 12px;
+            font-size: 14px;
+            background-color: var(--card-bg);
+            border: 1px solid var(--primary-color);
+            color: var(--text-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .futuristic-button::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(76, 175, 80, 0.2), transparent);
+            transition: all 0.5s;
+        }
+        
+        .futuristic-button:hover {
+            background-color: var(--primary-color);
+            color: #121212;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(76, 175, 80, 0.3);
+        }
+        
+        .futuristic-button:hover::before {
+            left: 100%;
+        }
+        
+        .futuristic-button::after {
+            content: "→";
+            margin-left: auto;
+            opacity: 0;
+            transition: all 0.3s;
+        }
+        
+        .futuristic-button:hover::after {
+            opacity: 1;
+            transform: translateX(5px);
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            color: #777;
+            font-size: 14px;
+            padding: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .youtube-link {
+            display: inline-block;
+            margin-top: 20px;
+            transition: transform 0.3s ease;
+        }
+        
+        .youtube-link:hover {
+            transform: scale(1.1);
+        }
+        
+        .youtube-img {
+            width: 150px;
+            height: auto;
+            filter: drop-shadow(0 0 5px rgba(255,0,0,0.5));
+        }
+        
+        .search-engine-badge {
+            display: inline-block;
+            background-color: #333;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.7em;
+            margin-left: 5px;
+            vertical-align: middle;
+        }
+        
+        .google-badge {
+            background-color: #4285F4;
+        }
+        
+        .duckduckgo-badge {
+            background-color: #DE5833;
+        }
+        
+        @media (max-width: 768px) {
+            .button-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .target-input {
+                width: 100%;
+                padding: 12px 20px;
+            }
+            
+            h1 {
+                font-size: 1.8em;
+            }
         }
     </style>
 </head>
 <body>
-    <video autoplay muted loop id="bg-video">
-        <source src="assets/video.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-     </video>
-<div class="desktop">
-    <div class="folder-icon" id="OpenSearch">
-        <a href="browse/index.html" target="_blank">
-            <img src="assets/browse.ico" alt="Search">
-            <span class="folder-label">Explore</span>
-        </a>
-    </div>
-    
-    <div class="folder-icon" id="openGithub">
-        <a href="https://github.com/1h3ll" target="_blank">
-            <img src="assets/github.ico" alt="Github Icon">
-            <span class="folder-label">Github</span>
-        </a>
+    <div class="container">
+        <h1>Bug Bounty Search Engine</h1>
+        
+        <div class="search-header">
+            <input type="text" id="target" class="target-input" placeholder="Enter target domain (example.com)" autocomplete="off">
+        </div>
+        
+        <div class="button-container">
+            <!-- File Discovery Section -->
+            <div class="button-section">
+                <h3 class="section-title">File Discovery</h3>
+                <button class="futuristic-button" onclick="searchDork(1)">Directory listing vulnerabilities</button>
+                <button class="futuristic-button" onclick="searchDork(2)">Exposed Configuration files</button>
+                <button class="futuristic-button" onclick="searchDork(3)">Exposed Database files</button>
+                <button class="futuristic-button" onclick="searchDork(4)">Exposed log files</button>
+                <button class="futuristic-button" onclick="searchDork(5)">Backup and old files</button>
+                <button class="futuristic-button" onclick="searchDork(8)">Publicly exposed documents</button>
+                <button class="futuristic-button" onclick="searchDork(12)">Install / Setup files</button>
+                <button class="futuristic-button" onclick="searchDork(46)">Sensitive File (conf.php)</button>
+                <button class="futuristic-button" onclick="searchDork(59)">MySQL config files</button>
+            </div>
+            
+            <!-- Web Application Section -->
+            <div class="button-section">
+                <h3 class="section-title">Web Applications</h3>
+                <button class="futuristic-button" onclick="searchDork(6)">Login pages</button>
+                <button class="futuristic-button" onclick="searchDork(7)">SQL errors</button>
+                <button class="futuristic-button" onclick="searchDork(9)">phpinfo()</button>
+                <button class="futuristic-button" onclick="searchDork(10)">Find WordPress</button>
+                <button class="futuristic-button" onclick="searchDork(11)">Finding Backdoors</button>
+                <button class="futuristic-button" onclick="searchDork(13)">Open Redirects</button>
+                <button class="futuristic-button" onclick="searchDork(14)">Apache STRUTS RCE</button>
+                <button class="futuristic-button" onclick="searchDork(42)">Admin Portal</button>
+                <button class="futuristic-button" onclick="searchDork(44)">File Upload</button>
+            </div>
+            
+            <!-- Subdomains & Infrastructure -->
+            <div class="button-section">
+                <h3 class="section-title">Subdomains & Infrastructure</h3>
+                <button class="futuristic-button" onclick="searchDork(18)">Find Subdomains</button>
+                <button class="futuristic-button" onclick="searchDork(19)">Find Sub-Subdomains</button>
+                <button class="futuristic-button" onclick="searchDork(30)">Certificate Transparency</button>
+                <button class="futuristic-button" onclick="searchDork(34)">Search in Censys (IPv4)</button>
+                <button class="futuristic-button" onclick="searchDork(35)">Search in Censys (Domain)</button>
+                <button class="futuristic-button" onclick="searchDork(36)">Search in Censys (Certificates)</button>
+                <button class="futuristic-button" onclick="searchDork(37)">Search in SHODAN</button>
+                <button class="futuristic-button" onclick="searchDork(38)">Vulnerable Servers</button>
+                <button class="futuristic-button" onclick="searchDork(39)">ArcGIS REST Services</button>
+            </div>
+            
+            <!-- Archives & External Sites -->
+            <div class="button-section">
+                <h3 class="section-title">Archives & External Sites</h3>
+                <button class="futuristic-button" onclick="searchDork(15)">Find Pastebin entries</button>
+                <button class="futuristic-button" onclick="searchDork(16)">Employees on LINKEDIN</button>
+                <button class="futuristic-button" onclick="searchDork(21)">Search in GITHUB</button>
+                <button class="futuristic-button" onclick="searchDork(28)">Search in Web Archive #1</button>
+                <button class="futuristic-button" onclick="searchDork(29)">Search in Web Archive #2</button>
+                <button class="futuristic-button" onclick="searchDork(31)">Search OpenBugBounty</button>
+                <button class="futuristic-button" onclick="searchDork(32)">Search in Reddit</button>
+                <button class="futuristic-button" onclick="searchDork(23)">Check in ThreatCrowd</button>
+            </div>
+            
+            <!-- WordPress Specific -->
+            <div class="button-section">
+                <h3 class="section-title">WordPress Specific</h3>
+                <button class="futuristic-button" onclick="searchDork(10)">Find WordPress #1</button>
+                <button class="futuristic-button" onclick="searchDork(20)">Find WordPress #2</button>
+                <button class="futuristic-button" onclick="searchDork(33)">WP Config Backup</button>
+                <button class="futuristic-button" onclick="searchDork(40)">wp-content Juicy Info</button>
+                <button class="futuristic-button" onclick="searchDork(43)">WordPress Juicy file 1</button>
+                <button class="futuristic-button" onclick="searchDork(45)">Vulnerable WordPress Plugin</button>
+                <button class="futuristic-button" onclick="searchDork(50)">WordPress Juicy file 2</button>
+                <button class="futuristic-button" onclick="searchDork(54)">WordPress Juicy file 3</button>
+                <button class="futuristic-button" onclick="searchDork(58)">WordPress Backup</button>
+            </div>
+            
+            <!-- Database & Config Files -->
+            <div class="button-section">
+                <h3 class="section-title">Database & Config Files</h3>
+                <button class="futuristic-button" onclick="searchDork(3)">Database files</button>
+                <button class="futuristic-button" onclick="searchDork(52)">Joomla Database</button>
+                <button class="futuristic-button" onclick="searchDork(53)">SQL File</button>
+                <button class="futuristic-button" onclick="searchDork(55)">Remote procedure call protocol</button>
+                <button class="futuristic-button" onclick="searchDork(56)">Sensitive File (download.php)</button>
+                <button class="futuristic-button" onclick="searchDork(57)">jwks-rsa file</button>
+                <button class="futuristic-button" onclick="searchDork(64)">Directories containing SQL Installs</button>
+            </div>
+            
+            <!-- System & Docker Files -->
+            <div class="button-section">
+                <h3 class="section-title">System & Docker Files</h3>
+                <button class="futuristic-button" onclick="searchDork(17)">.htaccess sensitive files</button>
+                <button class="futuristic-button" onclick="searchDork(41)">main.yml file</button>
+                <button class="futuristic-button" onclick="searchDork(47)">Sharing API Info</button>
+                <button class="futuristic-button" onclick="searchDork(48)">Sensitive Admin Backup</button>
+                <button class="futuristic-button" onclick="searchDork(49)">Github API</button>
+                <button class="futuristic-button" onclick="searchDork(51)">Drupal Login</button>
+                <button class="futuristic-button" onclick="searchDork(60)">Config YAML files</button>
+                <button class="futuristic-button" onclick="searchDork(61)">Docker-Compose yml file</button>
+                <button class="futuristic-button" onclick="searchDork(62)">pom.xml files</button>
+                <button class="futuristic-button" onclick="searchDork(63)">/etc directory listings</button>
+            </div>
+            
+            <!-- Flash & Archive Searches -->
+            <div class="button-section">
+                <h3 class="section-title">Flash & Archive Searches</h3>
+                <button class="futuristic-button" onclick="searchDork(22)">Test CrossDomain</button>
+                <button class="futuristic-button" onclick="searchDork(24)">Find SWF</button>
+                <button class="futuristic-button" onclick="searchDork(25)">Find MIME-SWF</button>
+                <button class="futuristic-button" onclick="searchDork(26)">Find SWF links in the past</button>
+                <button class="futuristic-button" onclick="searchDork(27)">Find MIME-SWF links in the past</button>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <a href="https://www.youtube.com/@CyberHacks200" target="_blank" class="youtube-link">
+                <img src="https://nitinyadav00.github.io/Bug-Bounty-Search-Engine/Youtube-01.svg" alt="YouTube" class="youtube-img">
+            </a>
+            <p>Bug Bounty Search Engine - For security research purposes only</p>
+            <p>Each search opens Google <span class="search-engine-badge google-badge">Google</span> and DuckDuckGo <span class="search-engine-badge duckduckgo-badge">DuckDuckGo</span> in separate tabs</p>
+        </div>
     </div>
 
-    <div class="folder-icon" id="google-dork">
-        <a href="dorks/google.html" target="_blank">
-            <img src="assets/google.ico" alt="Google-Dork Icon">
-            <span class="folder-label">Do Nothing</span>
-        </a>
-    </div>
-
-    <div class="folder-icon" id="nonprofit">
-        <a href="" target="_blank">
-            <img src="assets/cat.ico" alt="Nonprofit Icon">
-            <span class="folder-label">Do Nothing</span>
-        </a>
-    </div>
-</div>
+    <script>
+        function searchDork(type) {
+            var targetDomain = document.getElementById('target').value.trim();
+            
+            if (!targetDomain) {
+                alert('Please enter a target domain.');
+                return;
+            }
+            
+            // Remove http:// or https:// if present
+            targetDomain = targetDomain.replace(/^https?:\/\//i, '');
+            
+            // Remove paths if present
+            targetDomain = targetDomain.split('/')[0];
+            
+            var searchQuery = getDorkQuery(type, targetDomain);
+            
+            if (!searchQuery) {
+                alert('Invalid search type.');
+                return;
+            }
+            
+            // Open Google search (if it exists)
+            if (searchQuery.google) {
+                var googleUrl = 'https://www.google.com/search?q=' + encodeURIComponent(searchQuery.google);
+                window.open(googleUrl, '_blank');
+            }
+            
+            // Open DuckDuckGo search (if it exists)
+            if (searchQuery.duckduckgo) {
+                var duckduckgoUrl = 'https://duckduckgo.com/?q=' + encodeURIComponent(searchQuery.duckduckgo);
+                // Use setTimeout to avoid popup blockers
+                setTimeout(function() {
+                    window.open(duckduckgoUrl, '_blank');
+                }, 100);
+            } else if (searchQuery.google) {
+                // Fallback to using Google query if no specific DuckDuckGo query exists
+                var duckduckgoUrl = 'https://duckduckgo.com/?q=' + encodeURIComponent(searchQuery.google);
+                setTimeout(function() {
+                    window.open(duckduckgoUrl, '_blank');
+                }, 100);
+            }
+            
+            // For special searches that have custom URLs
+            if (searchQuery.custom) {
+                setTimeout(function() {
+                    window.open(searchQuery.custom, '_blank');
+                }, 200);
+            }
+        }
+        
+        function getDorkQuery(type, targetDomain) {
+            var baseQuery = 'site:' + targetDomain;
+            var queries = {
+                google: '',
+                duckduckgo: ''
+            };
+            
+            switch (type) {
+                case 1:
+                    queries.google = baseQuery + ' intitle:index.of';
+                    queries.duckduckgo = baseQuery + ' intitle:index.of';
+                    break;
+                case 2:
+                    queries.google = baseQuery + ' ext:xml | ext:conf | ext:cnf | ext:reg | ext:inf | ext:rdp | ext:cfg | ext:txt | ext:ora | ext:ini';
+                    queries.duckduckgo = baseQuery + ' ext:xml OR ext:conf OR ext:cnf OR ext:reg OR ext:inf OR ext:rdp OR ext:cfg OR ext:txt OR ext:ora OR ext:ini';
+                    break;
+                case 3:
+                    queries.google = baseQuery + ' ext:sql | ext:dbf | ext:mdb';
+                    queries.duckduckgo = baseQuery + ' ext:sql OR ext:dbf OR ext:mdb';
+                    break;
+                case 4:
+                    queries.google = baseQuery + ' ext:log';
+                    queries.duckduckgo = baseQuery + ' ext:log';
+                    break;
+                case 5:
+                    queries.google = baseQuery + ' ext:bkf | ext:bkp | ext:bak | ext:old | ext:backup';
+                    queries.duckduckgo = baseQuery + ' ext:bkf OR ext:bkp OR ext:bak OR ext:old OR ext:backup';
+                    break;
+                case 6:
+                    queries.google = baseQuery + ' inurl:login';
+                    queries.duckduckgo = baseQuery + ' inurl:login';
+                    break;
+                case 7:
+                    queries.google = baseQuery + ' intext:"sql syntax near" | intext:"syntax error has occurred" | intext:"incorrect syntax near" | intext:"unexpected end of SQL command" | intext:"Warning: mysql_connect()" | intext:"Warning: mysql_query()" | intext:"Warning: pg_connect()"';
+                    queries.duckduckgo = baseQuery + ' intext:"sql syntax near" OR intext:"syntax error has occurred" OR intext:"incorrect syntax near" OR intext:"unexpected end of SQL command" OR intext:"Warning: mysql_connect()" OR intext:"Warning: mysql_query()" OR intext:"Warning: pg_connect()"';
+                    break;
+                case 8:
+                    queries.google = baseQuery + ' ext:doc | ext:docx | ext:odt | ext:pdf | ext:rtf | ext:sxw | ext:psw | ext:ppt | ext:pptx | ext:pps | ext:csv';
+                    queries.duckduckgo = baseQuery + ' ext:doc OR ext:docx OR ext:odt OR ext:pdf OR ext:rtf OR ext:sxw OR ext:psw OR ext:ppt OR ext:pptx OR ext:pps OR ext:csv';
+                    break;
+                case 9:
+                    queries.google = baseQuery + ' ext:php intitle:phpinfo "published by the PHP Group"';
+                    queries.duckduckgo = baseQuery + ' ext:php intitle:phpinfo "published by the PHP Group"';
+                    break;
+                case 10:
+                    queries.google = baseQuery + ' inurl:wp- | inurl:wp-content | inurl:plugins | inurl:uploads | inurl:themes | inurl:download';
+                    queries.duckduckgo = baseQuery + ' inurl:wp- OR inurl:wp-content OR inurl:plugins OR inurl:uploads OR inurl:themes OR inurl:download';
+                    break;
+                case 11:
+                    queries.google = baseQuery + ' inurl:shell | inurl:backdoor | inurl:wso | inurl:cmd | shadow | passwd | boot.ini | inurl:backdoor';
+                    queries.duckduckgo = baseQuery + ' inurl:shell OR inurl:backdoor OR inurl:wso OR inurl:cmd OR shadow OR passwd OR boot.ini OR inurl:backdoor';
+                    break;
+                case 12:
+                    queries.google = baseQuery + ' inurl:readme | inurl:license | inurl:install | inurl:setup | inurl:config';
+                    queries.duckduckgo = baseQuery + ' inurl:readme OR inurl:license OR inurl:install OR inurl:setup OR inurl:config';
+                    break;
+                case 13:
+                    queries.google = baseQuery + ' inurl:redir | inurl:url | inurl:redirect | inurl:return | inurl:src=http | inurl:r=http';
+                    queries.duckduckgo = baseQuery + ' inurl:redir OR inurl:url OR inurl:redirect OR inurl:return OR inurl:src=http OR inurl:r=http';
+                    break;
+                case 14:
+                    queries.google = baseQuery + ' ext:action | ext:struts | ext:do';
+                    queries.duckduckgo = baseQuery + ' ext:action OR ext:struts OR ext:do';
+                    break;
+                case 15:
+                    queries.google = 'site:pastebin.com ' + targetDomain;
+                    queries.duckduckgo = 'site:pastebin.com ' + targetDomain;
+                    break;
+                case 16:
+                    queries.google = 'site:linkedin.com employees ' + targetDomain;
+                    queries.duckduckgo = 'site:linkedin.com employees ' + targetDomain;
+                    break;
+                case 17:
+                    queries.google = 'inurl:"/phpinfo.php" | inurl:".htaccess" | inurl:"/.git" ' + targetDomain + ' -github';
+                    queries.duckduckgo = 'inurl:"/phpinfo.php" OR inurl:".htaccess" OR inurl:"/.git" ' + targetDomain + ' -github';
+                    break;
+                case 18:
+                    queries.google = 'site:*.' + targetDomain;
+                    queries.duckduckgo = 'site:*.' + targetDomain;
+                    break;
+                case 19:
+                    queries.google = 'site:*.*.' + targetDomain;
+                    queries.duckduckgo = 'site:*.*.' + targetDomain;
+                    break;
+                case 20:
+                    queries.google = 'inurl:wp-content | inurl:wp-includes ' + targetDomain;
+                    queries.duckduckgo = 'inurl:wp-content OR inurl:wp-includes ' + targetDomain;
+                    break;
+                case 21:
+                    queries.custom = 'https://github.com/search?q="*.' + targetDomain + '"&type=host';
+                    queries.google = 'site:github.com "' + targetDomain + '"';
+                    queries.duckduckgo = 'site:github.com "' + targetDomain + '"';
+                    break;
+                case 22:
+                    queries.custom = 'http://' + targetDomain + '/crossdomain.xml';
+                    break;
+                case 23:
+                    queries.custom = 'http://threatcrowd.org/domain.php?domain=' + targetDomain;
+                    break;
+                case 24:
+                    queries.google = '+inurl:' + targetDomain + ' +ext:swf';
+                    queries.duckduckgo = 'inurl:' + targetDomain + ' ext:swf';
+                    break;
+                case 25:
+                    queries.google = 'site:' + targetDomain + ' mime:swf';
+                    queries.duckduckgo = 'site:' + targetDomain + ' mime:swf';
+                    queries.custom = 'https://yandex.com/search/?text=' + encodeURIComponent(queries.google);
+                    break;
+                case 26:
+                    queries.custom = 'https://web.archive.org/cdx/search?url=' + targetDomain + '/&matchType=domain&collapse=urlkey&output=text&fl=original&filter=urlkey:.*swf&limit=100000&_=1507209148310';
+                    break;
+                case 27:
+                    queries.custom = 'https://web.archive.org/cdx/search?url=' + targetDomain + '/&matchType=domain&collapse=urlkey&output=text&fl=original&filter=mimetype:application/x-shockwave-flash&limit=100000&_=1507209148310';
+                    break;
+                case 28:
+                    queries.custom = 'https://web.archive.org/web/*/(.' + targetDomain + ')';
+                    break;
+                case 29:
+                    queries.custom = 'https://web.archive.org/web/*/' + targetDomain + '/*';
+                    break;
+                case 30:
+                    queries.custom = 'https://crt.sh/?q=%25.' + targetDomain;
+                    break;
+                case 31:
+                    queries.custom = 'https://www.openbugbounty.org/search/?search=' + targetDomain + '&type=host';
+                    break;
+                case 32:
+                    queries.google = 'site:reddit.com ' + targetDomain;
+                    queries.duckduckgo = 'site:reddit.com ' + targetDomain;
+                    break;
+                case 33:
+                    queries.google = '+inurl:' + targetDomain + ' +ext:wp- | +inurl:' + targetDomain + ' +ext:wp-content';
+                    queries.duckduckgo = 'inurl:' + targetDomain + ' ext:wp- OR inurl:' + targetDomain + ' ext:wp-content';
+                    queries.custom = 'http://wwwb-dedup.us.archive.org:8083/cdx/search?url=' + targetDomain + '/&matchType=domain&collapse=digest&output=text&fl=original,timestamp&filter=urlkey:.*wp[-].*&limit=1000000&xx=';
+                    break;
+                case 34:
+                    queries.custom = 'https://censys.io/ipv4?q=' + targetDomain;
+                    break;
+                case 35:
+                    queries.custom = 'https://censys.io/domain?q=' + targetDomain;
+                    break;
+                case 36:
+                    queries.custom = 'https://censys.io/certificates?q=' + targetDomain;
+                    break;
+                case 37:
+                    queries.custom = 'https://www.shodan.io/search?query=' + targetDomain;
+                    break;
+                case 38:
+                    queries.google = baseQuery + ' inurl:"/geoserver/ows?service=wfs"';
+                    queries.duckduckgo = baseQuery + ' inurl:"/geoserver/ows?service=wfs"';
+                    break;
+                case 39:
+                    queries.google = baseQuery + ' intext:"ArcGIS REST Services Directory" intitle:"Folder: /"';
+                    queries.duckduckgo = baseQuery + ' intext:"ArcGIS REST Services Directory" intitle:"Folder: /"';
+                    break;
+                case 40:
+                    queries.google = baseQuery + ' inurl:/wp-content/uploads/wpo_wcpdf';
+                    queries.duckduckgo = baseQuery + ' inurl:/wp-content/uploads/wpo_wcpdf';
+                    break;
+                case 41:
+                    queries.google = baseQuery + ' intitle:"index of "main.yml"';
+                    queries.duckduckgo = baseQuery + ' intitle:"index of "main.yml"';
+                    break;
+                case 42:
+                    queries.google = baseQuery + ' inurl:/admin.aspx';
+                    queries.duckduckgo = baseQuery + ' inurl:/admin.aspx';
+                    break;
+                case 43:
+                    queries.google = baseQuery + ' inurl:/wp-content/uploads/wpo_wcpdf';
+                    queries.duckduckgo = baseQuery + ' inurl:/wp-content/uploads/wpo_wcpdf';
+                    break;
+                case 44:
+                    queries.google = baseQuery + ' inurl:uploadimage.php';
+                    queries.duckduckgo = baseQuery + ' inurl:uploadimage.php';
+                    break;
+                case 45:
+                    queries.google = baseQuery + ' inurl:*/wp-content/plugins/contact-form-7/';
+                    queries.duckduckgo = baseQuery + ' inurl:*/wp-content/plugins/contact-form-7/';
+                    break;
+                case 46:
+                    queries.google = baseQuery + ' intitle:index.of conf.php';
+                    queries.duckduckgo = baseQuery + ' intitle:index.of conf.php';
+                    break;
+                case 47:
+                    queries.google = baseQuery + ' intitle:"Sharing API Info"';
+                    queries.duckduckgo = baseQuery + ' intitle:"Sharing API Info"';
+                    break;
+                case 48:
+                    queries.google = baseQuery + ' intitle:"Index of" inurl:/backup/ "admin.zip"';
+                    queries.duckduckgo = baseQuery + ' intitle:"Index of" inurl:/backup/ "admin.zip"';
+                    break;
+                case 49:
+                    queries.google = baseQuery + ' intitle:"index of" github-api';
+                    queries.duckduckgo = baseQuery + ' intitle:"index of" github-api';
+                    break;
+                case 50:
+                    queries.google = baseQuery + ' inurl:wp-content/uploads/wcpa_uploads';
+                    queries.duckduckgo = baseQuery + ' inurl:wp-content/uploads/wcpa_uploads';
+                    break;
+                case 51:
+                    queries.google = baseQuery + ' inurl:user intitle:"Drupal" intext:"Log in" -"powered by"';
+                    queries.duckduckgo = baseQuery + ' inurl:user intitle:"Drupal" intext:"Log in" -"powered by"';
+                    break;
+                case 52:
+                    queries.google = baseQuery + ' inurl: /libraries/joomla/database/';
+                    queries.duckduckgo = baseQuery + ' inurl: /libraries/joomla/database/';
+                    break;
+                case 53:
+                    queries.google = baseQuery + ' inurl:"php?sql=select" ext:php';
+                    queries.duckduckgo = baseQuery + ' inurl:"php?sql=select" ext:php';
+                    break;
+                case 54:
+                    queries.google = baseQuery + ' inurl:"wp-content" intitle:"index.of" intext:wp-config.php';
+                    queries.duckduckgo = baseQuery + ' inurl:"wp-content" intitle:"index.of" intext:wp-config.php';
+                    break;
+                case 55:
+                    queries.google = baseQuery + ' intext:"index of" inurl:json-rpc';
+                    queries.duckduckgo = baseQuery + ' intext:"index of" inurl:json-rpc';
+                    break;
+                case 56:
+                    queries.google = baseQuery + ' intitle:"index of" "download.php?file="';
+                    queries.duckduckgo = baseQuery + ' intitle:"index of" "download.php?file="';
+                    break;
+                case 57:
+                    queries.google = baseQuery + ' intext:"index of" inurl:jwks-rsa';
+                    queries.duckduckgo = baseQuery + ' intext:"index of" inurl:jwks-rsa';
+                    break;
+                case 58:
+                    queries.google = baseQuery + ' inurl:"wp-content" intitle:"index.of" intext:backup"';
+                    queries.duckduckgo = baseQuery + ' inurl:"wp-content" intitle:"index.of" intext:backup"';
+                    break;
+                case 59:
+                    queries.google = baseQuery + ' intitle:index.of conf.mysql';
+                    queries.duckduckgo = baseQuery + ' intitle:index.of conf.mysql';
+                    break;
+                case 60:
+                    queries.google = baseQuery + ' intitle:"index of" "users.yml" | "admin.yml" | "config.yml"';
+                    queries.duckduckgo = baseQuery + ' intitle:"index of" "users.yml" OR "admin.yml" OR "config.yml"';
+                    break;
+                case 61:
+                    queries.google = baseQuery + ' intitle:"index of" "docker-compose.yml"';
+                    queries.duckduckgo = baseQuery + ' intitle:"index of" "docker-compose.yml"';
+                    break;
+                case 62:
+                    queries.google = baseQuery + ' intext:pom.xml intitle:"index of /"';
+                    queries.duckduckgo = baseQuery + ' intext:pom.xml intitle:"index of /"';
+                    break;
+                case 63:
+                    queries.google = baseQuery + ' intext:"Index of" intext:"/etc"';
+                    queries.duckduckgo = baseQuery + ' intext:"Index of" intext:"/etc"';
+                    break;
+                case 64:
+                    queries.google = baseQuery + ' "sql" "parent" intitle:index.of -injection';
+                    queries.duckduckgo = baseQuery + ' "sql" "parent" intitle:index.of -injection';
+                    break;
+                default:
+                    return null;
+            }
+            
+            return queries;
+        }
+        
+        // Focus the input field on page load
+        window.onload = function() {
+            document.getElementById('target').focus();
+        };
+    </script>
 </body>
 </html>
-
